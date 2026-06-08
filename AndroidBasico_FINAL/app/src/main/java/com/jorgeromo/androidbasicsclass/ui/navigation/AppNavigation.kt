@@ -22,9 +22,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jorgeromo.androidbasicsclass.ui.login.LoginScreenView
-import com.jorgeromo.androidbasicsclass.ui.thirdpartialids2.firstApiRequest.view.FirstApiRequestView
 import com.jorgeromo.androidbasicsclass.ui.firstpartialpdm1.homeFirstPartialPDM1.view.HomeFirstPartialPDM1View
 import com.jorgeromo.androidbasicsclass.ui.personalinformation.homePersonalInformation.view.HomePersonalInformationView
+import com.jorgeromo.androidbasicsclass.ui.secondpartialpdm1.homeSecondPartialPDM1.view.GameApiView
 import com.jorgeromo.androidbasicsclass.ui.secondpartialpdm1.homeSecondPartialPDM1.view.HomeSecondPartialPDM1View
 import com.jorgeromo.androidbasicsclass.ui.thirdpartialids2.homeThirdPartialIDS2.view.HomeThirdPartialIDS2View
 import com.jorgeromo.androidbasicsclass.ui.thirdpartialpdm1.homeThirdPartialPDM1.view.HomeThirdPartialPDM1View
@@ -61,7 +61,7 @@ fun AppNavigation() {
         }
         composable("tabs") {
             TabsScaffold(
-                onNavigateToFirstApiRequest = { rootNavController.navigate("first_api_request") },
+                onNavigateToGameApi = { rootNavController.navigate("game_api") },
                 onLogout = {
                     rootNavController.navigate("login") {
                         popUpTo("tabs") { inclusive = true }
@@ -69,15 +69,15 @@ fun AppNavigation() {
                 }
             )
         }
-        composable("first_api_request") {
-            FirstApiRequestView(onBack = { rootNavController.popBackStack() })
+        composable("game_api") {
+            GameApiView(onBack = { rootNavController.popBackStack() })
         }
     }
 }
 
 @Composable
 private fun TabsScaffold(
-    onNavigateToFirstApiRequest: () -> Unit,
+    onNavigateToGameApi: () -> Unit,
     onLogout: () -> Unit
 ) {
     val navController = rememberNavController()
@@ -113,12 +113,14 @@ private fun TabsScaffold(
         ) {
             composable(AppRoute.ThirdPartialIDS2.route) {
                 HomeThirdPartialIDS2View(
-                    onNavigateToFirstApiRequest = onNavigateToFirstApiRequest,
+                    onNavigateToFirstApiRequest = {},
                     onLogout = onLogout
                 )
             }
             composable(AppRoute.FirstPartialPDM1.route) { HomeFirstPartialPDM1View() }
-            composable(AppRoute.SecondPartialPDM1.route) { HomeSecondPartialPDM1View() }
+            composable(AppRoute.SecondPartialPDM1.route) {
+                HomeSecondPartialPDM1View(onNavigateToGameApi = onNavigateToGameApi)
+            }
             composable(AppRoute.ThirdPartialPDM1.route) { HomeThirdPartialPDM1View() }
             composable(AppRoute.PersonalInformation.route) { HomePersonalInformationView() }
         }

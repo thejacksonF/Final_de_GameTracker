@@ -21,42 +21,33 @@ data class GameProgress(
     val emoji: String
 )
 
-val myGames = listOf(
-    GameProgress("Dying Light: The Beast", "XBOX", 35, "En progreso", "🧟"),
-    GameProgress("Mortal Kombat 1", "XBOX", 100, "Completado", "🥊"),
-    GameProgress("The Finals", "PC", 78, "En progreso", "🏆"),
-    GameProgress("Arc Raiders", "PC", 60, "Pendiente", "🤖"),
-    GameProgress("Invincible VS", "XBOX", 40, "En progreso", "💥"),
-    GameProgress("Minecraft", "PC", 100, "Completado", "⛏️")
-)
-
 @Composable
 fun HomeSecondPartialPDM1View(
+    onNavigateToGameApi: () -> Unit = {},
     homeViewModel: HomeSecondPartialPDM1ViewModel = viewModel()
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "🎮 Mi Progreso",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 8.dp)
         )
-
         Text(
-            text = "${myGames.count { it.status == "Completado" }} de ${myGames.size} juegos completados",
+            text = "Consulta tus juegos y progreso desde la API",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 24.dp)
         )
-
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(myGames) { game ->
-                GameProgressCard(game)
-            }
+        Button(
+            onClick = onNavigateToGameApi,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Cargar desde API")
         }
     }
 }
@@ -68,7 +59,6 @@ fun GameProgressCard(game: GameProgress) {
         "En progreso" -> MaterialTheme.colorScheme.tertiary
         else -> MaterialTheme.colorScheme.outline
     }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -87,18 +77,15 @@ fun GameProgressCard(game: GameProgress) {
                     Text(game.status, modifier = Modifier.padding(horizontal = 4.dp))
                 }
             }
-
             Text(game.platform,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 8.dp))
-
             LinearProgressIndicator(
                 progress = { game.progress / 100f },
                 modifier = Modifier.fillMaxWidth(),
                 color = statusColor
             )
-
             Text("${game.progress}%",
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 4.dp))
