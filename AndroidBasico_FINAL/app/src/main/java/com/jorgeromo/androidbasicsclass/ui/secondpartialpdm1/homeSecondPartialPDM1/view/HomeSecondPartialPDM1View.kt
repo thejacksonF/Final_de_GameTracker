@@ -1,0 +1,107 @@
+package com.jorgeromo.androidbasicsclass.ui.secondpartialpdm1.homeSecondPartialPDM1.view
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jorgeromo.androidbasicsclass.ui.secondpartialpdm1.homeSecondPartialPDM1.viewmodel.HomeSecondPartialPDM1ViewModel
+
+data class GameProgress(
+    val title: String,
+    val platform: String,
+    val progress: Int,
+    val status: String,
+    val emoji: String
+)
+
+val myGames = listOf(
+    GameProgress("Dying Light: The Beast", "XBOX", 35, "En progreso", "🧟"),
+    GameProgress("Mortal Kombat 1", "XBOX", 100, "Completado", "🥊"),
+    GameProgress("The Finals", "PC", 78, "En progreso", "🏆"),
+    GameProgress("Arc Raiders", "PC", 60, "Pendiente", "🤖"),
+    GameProgress("Invincible VS", "XBOX", 40, "En progreso", "💥"),
+    GameProgress("Minecraft", "PC", 100, "Completado", "⛏️")
+)
+
+@Composable
+fun HomeSecondPartialPDM1View(
+    homeViewModel: HomeSecondPartialPDM1ViewModel = viewModel()
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "🎮 Mi Progreso",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        Text(
+            text = "${myGames.count { it.status == "Completado" }} de ${myGames.size} juegos completados",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            items(myGames) { game ->
+                GameProgressCard(game)
+            }
+        }
+    }
+}
+
+@Composable
+fun GameProgressCard(game: GameProgress) {
+    val statusColor = when (game.status) {
+        "Completado" -> MaterialTheme.colorScheme.primary
+        "En progreso" -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.outline
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("${game.emoji} ${game.title}",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge)
+                Badge(containerColor = statusColor) {
+                    Text(game.status, modifier = Modifier.padding(horizontal = 4.dp))
+                }
+            }
+
+            Text(game.platform,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 8.dp))
+
+            LinearProgressIndicator(
+                progress = { game.progress / 100f },
+                modifier = Modifier.fillMaxWidth(),
+                color = statusColor
+            )
+
+            Text("${game.progress}%",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 4.dp))
+        }
+    }
+}
